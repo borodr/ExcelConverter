@@ -5,6 +5,7 @@ import com.converter.Model.NalogStavka;
 import com.converter.Model.Roba;
 import com.vaadin.annotations.Theme;
 import com.vaadin.icons.VaadinIcons;
+import com.vaadin.server.Responsive;
 import com.vaadin.spring.annotation.SpringComponent;
 import com.vaadin.spring.annotation.UIScope;
 import com.vaadin.ui.Button;
@@ -26,21 +27,21 @@ public class ExcelView extends VerticalLayout{
 
 	public static final String VIEW_NAME = "excelView";
 	
-	public VerticalLayout rootPrviDio = new VerticalLayout();
-	public VerticalLayout lijevo = new VerticalLayout();
-	public HorizontalLayout hlLijevo = new HorizontalLayout();
-	public HorizontalLayout hlDesno = new HorizontalLayout();
+	public HorizontalLayout rootPrviDio = new HorizontalLayout();
+	public HorizontalLayout lijevo = new HorizontalLayout();
+	public VerticalLayout hlLijevo = new VerticalLayout();
+	public VerticalLayout hlDesno = new VerticalLayout();
 	
 	
-	public HorizontalLayout desno = new HorizontalLayout();
-	public VerticalLayout desnoPrvi = new VerticalLayout();
-	public VerticalLayout desnoDrugi = new VerticalLayout();
-	public VerticalLayout desnoTreci = new VerticalLayout();
-	public VerticalLayout desnoCetvrti = new VerticalLayout();
+	public VerticalLayout desno = new VerticalLayout();
+	public HorizontalLayout desnoPrvi = new HorizontalLayout();
+	public HorizontalLayout desnoDrugi = new HorizontalLayout();
+	public HorizontalLayout desnoTreci = new HorizontalLayout();
+	public HorizontalLayout desnoCetvrti = new HorizontalLayout();
 	
 	
 	public DateField datum = new DateField();
-	public ComboBox<Komitent> veleprodaja = new ComboBox<>("Komitent");
+	public ComboBox<Komitent> veleprodaja = new ComboBox<>();
 	public Button otvoriNalog = new Button("Otvori nalog", VaadinIcons.FILE);
 	public Button importFajl = new Button("Import Excel", VaadinIcons.CREDIT_CARD);
 	public Button automObrada= new Button("Automatska obrada", VaadinIcons.HAMMER);
@@ -54,8 +55,8 @@ public class ExcelView extends VerticalLayout{
 	public TextField kolicina= new TextField();
 	public TextField iznos= new TextField();
 	
-	public ComboBox<Komitent> komitent = new ComboBox<>("Komitent");
-	public ComboBox<Roba> roba = new ComboBox<>("Roba");
+	public ComboBox<Komitent> komitent = new ComboBox<>();
+	public ComboBox<Roba> roba = new ComboBox<>();
 	public Button updateZapis=new Button("Ažuriraj stavku", VaadinIcons.UPLOAD);
 	 
 
@@ -66,29 +67,38 @@ public class ExcelView extends VerticalLayout{
 	public Panel panelDrugi = new Panel();
 	
 	public ExcelView() {
+		Responsive.makeResponsive(this);
 		setSizeFull();
+		komitent.setPlaceholder("Komitent");
+		roba.setPlaceholder("Roba");
+		veleprodaja.setPlaceholder("Veleprodaja");
 		panelPrvi.setStyleName(ValoTheme.PANEL_BORDERLESS);
 		panelDrugi.setStyleName(ValoTheme.PANEL_BORDERLESS);
 		hlLijevo.addComponents(datum, veleprodaja, otvoriNalog);
 		hlDesno.addComponents(importFajl, automObrada);
 		lijevo.addComponents(hlLijevo, hlDesno);
+		lijevo.addStyleName(ValoTheme.LAYOUT_CARD);
 		
 		desnoPrvi.addComponents(robasifraext, robanazivext, kupacsifraext);
-		desnoPrvi.setSizeUndefined();
 		desnoDrugi.addComponents(kupacnazivext, cena, kolicina);
-		desnoDrugi.setSizeUndefined();
 		desnoTreci.addComponents(iznos);
-		desnoTreci.setSizeUndefined();
 		desnoCetvrti.addComponents(komitent, roba, updateZapis);
-		desnoCetvrti.setSizeUndefined();
 		
 		desno.addComponents(desnoPrvi, desnoDrugi, desnoTreci, desnoCetvrti);
+		desno.addStyleName(ValoTheme.LAYOUT_CARD);
+		lijevo.setSizeUndefined();
+		desno.setSizeFull();
 		rootPrviDio.addComponents(lijevo, desno);
+		rootPrviDio.setExpandRatio(desno, 1);
 		rootPrviDio.setSizeUndefined();
+		gridStavke.setSizeFull();
 		panelPrvi.setContent(rootPrviDio);
 		panelDrugi.setContent(gridStavke);
+		panelPrvi.setSizeUndefined();
+		panelDrugi.setSizeFull();
 		
 		addComponents(panelPrvi, panelDrugi);
+		setExpandRatio(panelDrugi, 1);
 	}
 	
 	public ExcelView getForm() {
