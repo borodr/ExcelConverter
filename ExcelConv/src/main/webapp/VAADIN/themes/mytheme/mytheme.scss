@@ -1,0 +1,260 @@
+$v-luminance-threshold: 180 !default;
+
+$editor-background-color: #3b3f42 !default;
+$valo-menu-background-color: $editor-background-color !default;
+
+$v-focus-color: rgb(96, 160, 234) !default;
+$v-error-indicator-color: #eb2977 !default;
+$v-friendly-color: rgb(54, 185, 85);
+
+$v-font-size: 15px !default;
+$v-font-weight: 400 !default;
+$v-unit-size: 32px !default;
+
+$login-info-width: 330px !default;
+$login-info-opacity: 0.7 !default;
+$login-background-color: $editor-background-color !default;
+// Get more background images from unsplash.com (remember to optimize the filesize)
+$login-background-image: "img/novaSlika.jpg" !default;
+
+$editor-shadow: 0 0 10px 10px rgba(0,0,0,.1) !default;
+$editor-embed-background-color: darken($editor-background-color, 5%) !default;
+$editor-raised-background-color: lighten($editor-background-color, 10%) !default;
+$editor-caption-font-color: valo-font-color($editor-background-color, 0.5) !default;
+
+$v-layout-margin-top: round($v-unit-size / 1.5) !default;
+$v-layout-margin-right: $v-layout-margin-top !default;
+$v-layout-margin-bottom: $v-layout-margin-top !default;
+$v-layout-margin-left: $v-layout-margin-top !default;
+$v-layout-spacing-vertical: round($v-unit-size / 1.8) !default;
+$v-layout-spacing-horizontal: round($v-unit-size / 1.8) !default;
+
+
+@import "../valo/valo.scss";
+@import "dashboardview";
+@import "transactions";
+@import "common";
+
+
+@mixin mytheme {
+  @include valo;
+  @include dashboard-dashboard-view;
+  @include dashboard-common;
+  @include dashboard-transactions-view;
+
+  // login pregled
+  .login-pocetniPregled {
+    background: $editor-background-color;
+
+    @if $login-background-image {
+      background-image: url(#{$login-background-image});
+      background-size: cover;
+      background-position: 50% 50%;
+    }
+
+    width: 100%;
+    height: 100%;
+
+    .login-forma {
+      @include valo-panel-style;
+      border: none;
+      padding: $v-layout-margin;
+      @include valo-animate-in-fade($duration: 1s);
+    }
+
+    .login-informacije {
+      display: inline-block;
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: $login-info-width;
+      height: 100%;
+      background: $v-selection-color; // For IE8
+      background-color: rgba($v-selection-color, $login-info-opacity);
+      padding: $v-layout-margin;
+      color: valo-font-color($v-selection-color, 0.9);
+      @include animation(valo-animate-in-fade 1s 1s backwards);
+
+      h1 {
+        color: inherit;
+        font-weight: bold;
+      }
+    }
+
+    .centriran-layout {
+      display: inline-block;
+      width: 100%;
+      height: 100%;
+      padding-left: $login-info-width;
+
+      .v-slot {
+        height: 100%;
+      }
+    }
+  }
+
+  // CRUD pregled, pozicija je reletavina iz razloga da bi Editor mogao biti u okviru tog view-a
+  .crud-pregled {
+  	position: relative;
+
+    .filter-tekstpolje {
+      width: round($v-unit-size * 9);
+    }
+  }
+
+  // sidebar editor za CRUD pregled, moze da se scroll ukoliko nema dovoljno prostora vertikalno
+  .zaposleni-forma-wrapper {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    z-index: 100;
+    width: round($v-unit-size * 9);
+    height: 100%;
+    overflow: auto;
+    padding: $v-layout-spacing-vertical $v-layout-spacing-horizontal;
+    background-color: $editor-background-color;
+    color: valo-font-color($editor-background-color, 0.8);
+
+    // Set the context color for the style mixins
+    $temp: $v-app-background-color;
+    $v-app-background-color: $editor-background-color;
+
+    .v-textfield {
+      @include valo-textfield-style($background-color: $editor-embed-background-color);
+    }
+
+    .v-checkbox {
+      @include valo-checkbox-style($background-color: $editor-raised-background-color);
+    }
+
+    .v-filterselect {
+      @include valo-combobox-style($background-color: $editor-raised-background-color, $bevel: $v-bevel, $gradient: $v-gradient);
+    }
+
+    // Restore variable
+    $v-app-background-color: $temp;
+
+    .v-button {
+      display: block;
+    }
+
+    .v-caption {
+      color: $editor-caption-font-color;
+    }
+
+    // try to ensure there is space under the last button also on small displays (does not work on IE8)
+    .form-layout > .v-expand > .v-slot:last-child {
+      padding-bottom: $v-layout-spacing-vertical;
+    }
+
+  }
+
+  .zaposleni-forma {
+    right: 0;
+    @include transition(all 300ms);
+    @include transform(translatex(100%));
+  }
+
+  // Animacija prilikom otvaranja CRUD editora
+  .visible {
+  	@include transform(none);
+    @include box-shadow($editor-shadow);
+  }
+
+  // Stilovi za pregled na manjim ekranima
+
+  .v-ui[width-range~="0-800px"] {
+
+    .main-screen {
+      padding-top: $v-unit-size;
+    }
+
+    .login-pocetniPregled {
+      height: auto;
+      min-height: 100%;
+
+      .login-informacije {
+        position: static;
+        width: 100%;
+        height: auto;
+
+        .v-label {
+          text-align: center;
+
+          h1 {
+            margin-top: .4em;
+          }
+        }
+      }
+
+      .centriran-layout {
+        display: block;
+        width: 100%;
+        height: auto;
+        padding-left: 0;
+        padding-top: 60px;
+        padding-bottom: 60px;
+      }
+
+      .login-forma {
+        width: 400px;
+        max-width: 100%;
+
+        table {
+          width: 100%;
+        }
+
+        .v-textfield {
+          width: 100% !important;
+        }
+
+        .v-formlayout-captioncell,
+        .v-formlayout-contentcell,
+        .v-formlayout-errorcell {
+          display: block;
+          text-align: center;
+          padding-top: 0;
+        }
+        .buttons {
+          width: 100%;
+          .v-button {
+            display: block;
+            text-align: center;
+          }
+        }
+      }
+    }
+  }
+
+  // Editor se prikazuje na cijelom ekranu ako je width do 550px
+  .v-ui[width-range~="0-550px"] {
+    .zaposleni-forma-wrapper {
+      width:100%;
+    }
+
+    // Izbacujemo margine oko grida na manjim ekranima
+    .crud-pregled .crud-main-layout {
+      padding: 0 0 0 0;
+
+      .top-bar {
+        padding: $v-layout-spacing-vertical $v-layout-spacing-horizontal 0 $v-layout-spacing-horizontal;
+
+        .filter-tekstpolje {
+          width: 100%;
+        }
+      }
+    }
+
+  }
+
+  input[type=number]::-webkit-inner-spin-button,
+  input[type=number]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+
+  .align-right {
+  	text-align: right;
+  }
+
+}
